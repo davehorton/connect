@@ -1,5 +1,7 @@
 # drachtio [![Build Status](https://secure.travis-ci.org/davehorton/drachtio.png)](http://travis-ci.org/davehorton/drachtio) [![NPM version](https://badge.fury.io/js/drachtio.svg)](http://badge.fury.io/js/drachtio)
 
+[![Join the chat at https://gitter.im/davehorton/drachtio](https://badges.gitter.im/davehorton/drachtio.svg)](https://gitter.im/davehorton/drachtio?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 <!-- [![Gittip](http://img.shields.io/gittip/davehorton.png)](https://www.gittip.com/davehorton/)
 
 <sub><sup>All tips will go to support the good causes and great people of
