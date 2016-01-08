@@ -13,7 +13,7 @@
     "array-flatten": "^2.0.0",
     "debug": ">= 0.7.3 < 1",
     "delegates": "0.0.3",
-    "drachtio-client": "^https://github.com/davehorton/drachtio-client.git#0.3.0",
+    "drachtio-client": "git://github.com/davehorton/drachtio-client.git#0.3.0",
     "sip-methods": "^0.1.0",
     "sip-status": "^0.1.0",
     "utils-merge": "1.0.0"
@@ -28,7 +28,7 @@
     "drachtio-test-fixtures": "~0.1.0",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
-    "drachtio-mw-registration-parser": "https://github.com/davehorton/drachtio-mw-registration-parser.git"
+    "drachtio-mw-registration-parser": "git://github.com/davehorton/drachtio-mw-registration-parser.git"
   },
   "licenses": [
     {
