@@ -25,7 +25,7 @@ describe('passport integration', function() {
         cfg.stopServers(done) ;
     }) ;
  
-    it('should work with passport digest authentication', function(done) {
+    it('should work with passport digest authentication with credentials provided directly', function(done) {
         var self = this ;
         var app = drachtio() ;
         configureUac( app, cfg.client[0] ) ;
@@ -38,12 +38,50 @@ describe('passport integration', function() {
                 headers: {
                     To: 'sip:dhorton@sip.drachtio.org',
                     From: 'sip:dhorton@sip.drachtio.org',
+                    Contact: '<sip:dhorton@sip.drachtio.org>;expires=30',
                     Subject: self.test.fullTitle()
                 },
-                username: 'dhorton',
-                password: '1234'
+                auth: {
+                    username: 'dhorton',
+                    password: '1234'
+                }
             }, function( err, req ) {
                 should.not.exist(err) ;
+                req.on('response', function(res){
+                    res.should.have.property('status',200); 
+
+                    //TODO: generate an Authorization header and retry
+                    app.idle.should.be.true ;
+                    done() ;
+                }) ;
+            }) ;
+        }) ;
+    }) ;    
+    it('should work with passport digest authentication with credentials provided via callback', function(done) {
+        var self = this ;
+        var app = drachtio() ;
+        configureUac( app, cfg.client[0] ) ;
+        uas = require('../scripts/passport/app')(cfg.client[1]) ;
+        cfg.connectAll([app, uas], function(err){
+            if( err ) throw err ;
+            app.request({
+                uri: cfg.sipServer[1],
+                method: 'REGISTER',
+                headers: {
+                    To: 'sip:dhorton@sip.drachtio.org',
+                    Contact: '<sip:dhorton@sip.drachtio.org>;expires=30',
+                    From: 'sip:dhorton@sip.drachtio.org',
+                    Subject: self.test.fullTitle()
+                },
+                auth: function( res, callback ) {
+                    res.should.have.property('status',401) ;
+                    callback(null, 'dhorton', '1234') ;
+                }
+            }, function( err, req ) {
+                should.not.exist(err) ;
+                req.on('authenticate', function(req) {
+                    debug('re-sent request with credentials: ', JSON.stringify(req)) ;
+                }) ;
                 req.on('response', function(res){
                     res.should.have.property('status',200); 
 
@@ -66,11 +104,14 @@ describe('passport integration', function() {
                 method: 'REGISTER',
                 headers: {
                     To: 'sip:dhorton@sip.drachtio.org',
+                    Contact: '<sip:dhorton@sip.drachtio.org>;expires=30',
                     From: 'sip:dhorton@sip.drachtio.org',
                     Subject: self.test.fullTitle()
                 },
-                username: 'dhorton',
-                password: '1234'
+                auth: {
+                    username: 'dhorton',
+                    password: '1234'                    
+                }
             }, function( err, req ) {
                 should.not.exist(err) ;
                 req.on('response', function(res){
