@@ -73,7 +73,7 @@ describe('passport integration', function() {
                     From: 'sip:dhorton@sip.drachtio.org',
                     Subject: self.test.fullTitle()
                 },
-                auth: function( res, callback ) {
+                auth: function( req, res, callback ) {
                     res.should.have.property('status',401) ;
                     callback(null, 'dhorton', '1234') ;
                 }
