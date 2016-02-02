@@ -62,6 +62,7 @@ describe('passport integration', function() {
         var app = drachtio() ;
         configureUac( app, cfg.client[0] ) ;
         uas = require('../scripts/passport/app')(cfg.client[1]) ;
+        var seq1, seq2 ;
         cfg.connectAll([app, uas], function(err){
             if( err ) throw err ;
             app.request({
@@ -74,12 +75,16 @@ describe('passport integration', function() {
                     Subject: self.test.fullTitle()
                 },
                 auth: function( req, res, callback ) {
+                    seq1 = req.getParsedHeader('cseq').seq ;
+                    debug('cseq value on first request: ', seq1) ;
                     res.should.have.property('status',401) ;
                     callback(null, 'dhorton', '1234') ;
                 }
             }, function( err, req ) {
                 should.not.exist(err) ;
                 req.on('authenticate', function(req) {
+                    seq2 = req.getParsedHeader('cseq').seq ;
+                    debug('cseq value on second request: ', seq2) ;
                     debug('re-sent request with credentials: ', JSON.stringify(req)) ;
                 }) ;
                 req.on('response', function(res){
