@@ -195,7 +195,7 @@ describe('proxy', function() {
             }) ;            
         }) ;
     }) ;    
-    it('should handle handle reliable provisional responses', function(done) {
+    it.only('should handle handle reliable provisional responses', function(done) {
         var self = this ;
         var app = drachtio() ;
         configureUac( app, cfg.client[0] ) ;
