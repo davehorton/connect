@@ -1,8 +1,7 @@
 var connect = require('../../..');
 var app = connect() ;
-var drachtio = require('drachtio-client') ;
-var agent = new drachtio.Agent( app ) ;
-var onSend = drachtio.onSend ;
+var Agent = connect.Agent ;
+var onSend = connect.onSend ;
 var fs = require('fs') ;
 var argv = require('minimist')(process.argv.slice(2));
 var debug = require('debug')('basic') ;

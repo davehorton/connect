@@ -3,7 +3,7 @@ var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var should = require('should');
 var debug = require('debug')('drachtio-client') ;
-var Agent = require('drachtio-client').Agent ;
+var Agent = require('../..').Agent ;
 var fixture = require('drachtio-test-fixtures') ;
 var uac, uas ;
 var cfg = fixture(__dirname,[9022,9023,9024],[6060,6061,6062]) ;
