@@ -3,7 +3,7 @@ git clone --depth=50 --branch=develop https://github.com/davehorton/drachtio-ser
 cd drachtio-server
 sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
 git submodule update --init --recursive
-./bootstrap
+./bootstrap.sh
 mkdir build && cd $_
 ../configure
 make
