@@ -14,8 +14,14 @@
     "debug": ">= 0.7.3 < 1",
     "delegates": "0.0.3",
     "sip-methods": "^0.1.0",
-    "sip-status": "^0.1.0",
-    "utils-merge": "1.0.0"
+    "utils-merge": "1.0.0",
+    "curry": "^1.2.0",
+    "drachtio-sip": "davehorton/drachtio-sip#0.2.3",
+    "merge": "^1.1.3",
+    "node-uuid": "^1.4.1",
+    "only": "0.0.2",
+    "node-noop": "0.0.1",
+    "sip-status": "~0.1.0"
   },
   "devDependencies": {
     "should": ">= 2.0.2 < 3",
