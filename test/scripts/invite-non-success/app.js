@@ -1,6 +1,6 @@
 var drachtio = require('../../..');
 var app = drachtio() ;
-var Agent = require('../..').Agent ;
+var agent = new drachtio.Agent( app ) ;
 var fs = require('fs') ;
 var argv = require('minimist')(process.argv.slice(2));
 var debug = require('debug')('basic') ;
