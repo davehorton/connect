@@ -1,7 +1,5 @@
 var drachtio = require('../../..') ;
 var fs = require('fs') ;
-var assert = require('assert') ;
-var debug = require('debug')('test:invite-success-uas-bye') ;
 var passport       = require('passport') ;
 var DigestStrategy = require('passport-http').DigestStrategy; 
 var registrationParser = require('drachtio-mw-registration-parser') ;
@@ -46,7 +44,6 @@ passport.use
             function ()
             {
                 // check nonces in params here, if desired
-                debug('params from passport digest strategy second callback: ', params );
                 /*
                 nonce: 'MYto1vSuu6eK9PMNNYAqIdsmUXOA2ppU',
                 cnonce: 'MDA4NjY5',

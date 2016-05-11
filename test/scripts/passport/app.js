@@ -1,12 +1,10 @@
 var drachtio = require('../../..') ;
 var fs = require('fs') ;
-var assert = require('assert') ;
-var debug = require('debug')('test:invite-success-uas-bye') ;
 var passport       = require('passport') ;
 var DigestStrategy = require('passport-http').DigestStrategy; 
 
 var users = [
-    { id: 1, username: 'dhorton', password: '1234', domain: "sip.drachtio.org"}
+    { id: 1, username: 'dhorton', password: '1234', domain: 'sip.drachtio.org'}
 ];
 function findByUsername( username, fn )
 {
@@ -34,27 +32,14 @@ passport.use
             {
                 if ( err )   { return done( err ); }
                 if ( !user ) { return done( null, false ); }
+
                 return done( null, user, user.password );
             }
         );
     },
-    function( params, done ) // second callback
-    {
-        // asynchronous validation, for effect...
-        process.nextTick(
-            function ()
-            {
-                // check nonces in params here, if desired
-                debug('params from passport digest strategy second callback: ', params );
-                /*
-                nonce: 'MYto1vSuu6eK9PMNNYAqIdsmUXOA2ppU',
-                cnonce: 'MDA4NjY5',
-                nc: '00000001',
-                opaque: undefined }
-                */
-                return done( null, true );
-            }
-        );
+    function(params, done) {
+      // validate nonces as necessary
+      done(null, true) ;
     }
 ));
 

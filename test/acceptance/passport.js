@@ -15,7 +15,7 @@ function configureUac( app, config ) {
     return app ;
 }
 
-describe('passport integration', function() {
+describe.only('passport integration', function() {
     this.timeout(6000) ;
 
     before(function(done){
