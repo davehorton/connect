@@ -1,50 +1,164 @@
-<!DOCTYPE html><html><head><title>Connect - High quality middleware for node.js</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><link rel="stylesheet" href="style.css"><script src="jquery.js"></script><script src="docs.js"></script></head><body><div id="content"><h1>Connect</h1><div id="" class="comment"><h2></h2><div class="description"><p>Connect is a middleware framework for node,<br />shipping with over 18 bundled middleware and a rich selection of<br />3rd-party middleware.</p>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>drachtio by davehorton</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">drachtio</h1>
+      <h2 class="project-tagline">drachtio SIP application framework</h2>
+      <a href="https://github.com/davehorton/drachtio" class="btn">View on GitHub</a>
+      <a href="https://github.com/davehorton/drachtio/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/davehorton/drachtio/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-<pre><code>var app = connect()
-  .use(connect.logger('dev'))
-  .use(connect.static('public'))
-  .use(function(req, res){
-    res.end('hello world\n');
-  })
- .listen(3000);
-</code></pre>
+    <section class="main-content">
+      <div class="drachtio-img">
+        <img src="http://davehorton.github.io/drachtio/img/definition-only-cropped.png">
+      </div>
+      <p>
+drachtio is a Node.js-based middleware framework for building <a href="https://www.ietf.org/rfc/rfc3261.txt">SIP</a> applications.  It is inspired by classic http middleware frameworks such as <a href="https://github.com/senchalabs/connect">connect</a> and <a href="http://expressjs.com">expressjs</a>, and developers who are familiar with such frameworks will find it quite easy to understand and work with.
+    </p>
+    <p>
+For developers new to SIP and VoIP in general, drachtio provides an easy path to building full-functional SIP applications; those more experienced with the SIP protocol will appreciate the flexibility that drachtio provides in terms of enabling any kind of SIP element: proxy servers, registars, user agent clients and servers, and back-to-back user agents.
+    </p>
+    <p>
+drachtio works in concert with [drachtio-server](https://github.com/davehorton/drachtio-server) -- drachtio-server implements the SIP stack and handles low-level SIP message processing, while drachtio-based applications provide the higher level application logic and control the actions of a drachtio server over a TCP network connection.
+    </p>
+    <p>
+drachtio also enables the higher level frameworks <a href="https://github.com/davehorton/drachtio-srf">drachtio-srf</a> - the drachtio sigaling resource framework, and <a href="https://github.com/davehorton/drachtio-fsmrf">drachtio-fsmrf</a> - the drachtio media resource framework.  Generally speaking, developers should consider using drachtio for simpler SIP applications such as proxy servers and registrars, using drachtio-srf for more complex application patterns such as back-to-back user agents, and should incorporate drachtio-fsmrf when media processing features such as IVR, conferencing, or recording are required.
+    </p>
+      <p>
+        <strong>Note:</strong> API documentation for drachtio <a href="http://davehorton.github.io/drachtio/api/index.html">can be found here</a>.
+      </p>
 
-<p>Installation:</p>
+      <pre>
+//sample application: a SIP proxy
+var drachtio = require('drachtio');
+var app = drachtio() ;
 
-<pre><code>$ npm install connect
-</code></pre>
+//connect to a drachtio server
+app.connect({host:'localhost', port: 8022, secret: 'cymru'}) ;
 
-<p>Middleware:</p>
+app.invite( function( req, res ) {
+  var user = req.msg.uri.match(/sip:(.*?)@(.*?)$/) ;
 
+  //search for the user in 3 different locations
+  req.proxy({
+    destination: [
+      'sip:' + user[1] + '@site1.mycompany.com',
+      'sip:' + user[1] + '@site2.mycompany.com',
+      'sip:' + user[1] + '@site2.mycompany.com'
+    ],
+    remainInDialog: true,
+    forking: 'simultaneous',
+    headers: {
+      'Subject': 'Incoming call for ' + user[1] 
+    }
+  }, function(err, response){
+    if( err ) return console.error('Error attempting to proxy request: ', err) ;
+    console.log('Final response for proxy: ' + response.finalStatus ) ;
+  }) ;
+}) ;
+      </pre>
+
+<h3>Getting Started</h3>
+<h4>Creating an application</h4>
+The first thing an application must do is to require the drachtio library and invoke the returned function to create an application.  The application instance that is created is an EventEmitter.
+<pre>
+var drachtio = require('drachtio') ;
+var app = drachtio() ;
+</pre>
+<h4>Connecting to the server</h4>
+The next thing an application must do is to call the 'connect' method in order to connect to the drachtio-server that will be providing the SIP endpoint. By default, 
+drachtio-server listens for TCP connections from clients on port 8022.  Clients must also provide a shared secret as a means of authentication.  
+<pre>
+app.connect({
+    host:'localhost',      //ip address or DNS name of drachtio-server
+    port: 8022,           //defaults to 8022 if not provided
+    secret: 'cymru'    //shared secret
+ }, function( err, hostport ) {
+    if( err ) throw err ;
+    console.log('success! drachtio-server is listening on ' + hostport) ;
+}) ;
+</pre>
+
+A 'connect' event is emitted by the app object when the connection has been established; alternatively, a callback can be passed to the connect method, as shown above.  
+<br/>
+The callback or event handler will an error object (null in the case of a successful connection) and a string variable describing the sip address and port the drachtio server is listening on for SIP messages.
+<br/>
+<h4>Receiving and responding to sip requests (UAS)</h4>
+A drachtio application can both send and receive SIP requests.  To receive SIP requests (i.e to act as a User Agent Server), app[verb] methods are used.  Request and Response objects are provided to the callback. 
+<br/>
+The Request object contains information describing the incoming sip request, along with methods that can be used to act on the request (e.g., req#proxy is a method provided to proxy the request).  The Response object contains methods that allow the application to control the generation of the sip response, in the case of an application acting as a SIP user agent server (UAS). 
+
+<pre>
+app.register( function( req, res ) {
+   var contact = req.getParsedHeader('Contact') ;
+   var expires = contact.params.expires || req.get('Expires') ;
+   console.log('Received a REGISTER request with Expires value: ' + expires) ;
+
+   res.send( 200, {
+      headers: {
+         'Expires': expires
+      }
+   })
+}) ;
+</pre>
+<blockquote>
+Notes:
 <ul>
-<li><a href="logger.html">logger</a> request logger with custom format support</li>
-<li><a href="csrf.html">csrf</a> Cross-site request forgery protection</li>
-<li><a href="compress.html">compress</a> Gzip compression middleware</li>
-<li><a href="basicAuth.html">basicAuth</a> basic http authentication</li>
-<li><a href="bodyParser.html">bodyParser</a> extensible request body parser</li>
-<li><a href="json.html">json</a> application/json parser</li>
-<li><a href="urlencoded.html">urlencoded</a> application/x-www-form-urlencoded parser</li>
-<li><a href="multipart.html">multipart</a> multipart/form-data parser</li>
-<li><a href="timeout.html">timeout</a> request timeouts</li>
-<li><a href="cookieParser.html">cookieParser</a> cookie parser</li>
-<li><a href="session.html">session</a> session management support with bundled MemoryStore</li>
-<li><a href="cookieSession.html">cookieSession</a> cookie-based session support</li>
-<li><a href="methodOverride.html">methodOverride</a> faux HTTP method support</li>
-<li><a href="responseTime.html">responseTime</a> calculates response-time and exposes via X-Response-Time</li>
-<li><a href="staticCache.html">staticCache</a> memory cache layer for the static() middleware</li>
-<li><a href="static.html">static</a> streaming static file server supporting <code>Range</code> and more</li>
-<li><a href="directory.html">directory</a> directory listing middleware</li>
-<li><a href="vhost.html">vhost</a> virtual host sub-domain mapping middleware</li>
-<li><a href="favicon.html">favicon</a> efficient favicon server (with default icon)</li>
-<li><a href="limit.html">limit</a> limit the bytesize of request bodies</li>
-<li><a href="query.html">query</a> automatic querystring parser, populating <code>req.query</code></li>
-<li><a href="errorHandler.html">errorHandler</a> flexible error handler</li>
+<li>drachtio-server automatically sends a 100 Trying to all incoming INVITE messages, so a drachtio app does not need to do so.</li>
+<li>A 'Content-Length' header is automatically provided by drachtio-server, so the application should not include that header.</li>
+<li>A 'Content-Type' header of 'application/sdp' will automatically be added by drachtio-server, where appropriate.  When sending any other content types, an application must explicitly include a 'Content-Type' header.</li>
+<li>Request and Response objects both support a `get` method to return the value of a named SIP header as a string value, and `getParsedHeader` to return object that represents the SIP header parsed into its component values.</li>
 </ul>
+</blockquote>
 
-<p>Links:</p>
+<h4>Sending sip requests (UAC)</h4>
+SIP requests can be sent (i.e., to act as a User Agent Client) using the app.request method:
 
-<ul>
-<li>list of <a href="https://github.com/senchalabs/connect/wiki">3rd-party</a> middleware</li>
-<li>GitHub <a href="http://github.com/senchalabs/connect">repository</a></li>
-<li><a href="https://github.com/senchalabs/connect/blob/gh-pages/tests.md">test documentation</a></li>
-</ul></div></div></div><ul id="menu"><li><a href="#"></a></li></ul></body></html>
+<pre>
+// connect and then send an OPTIONS ping
+app.connect({host:'localhost',port: 8022,secret: 'cymru'},
+    function(err, hostport){
+        if( err ) throw err ;
+
+        //connected ok
+        app.request({
+            uri: 'sip:1234@10.168.12.139'.
+            method: 'OPTION',
+            headers: {
+                'User-Agent': 'dracht.io'
+            }
+        } function( err, req ) {
+            if( err ) console.error( err ) ;
+
+            req.on('response', function(response){
+                console.log('response status was ' + response.status) ;
+                app.disconnect() ;
+            }) ;
+        }) ;    
+    }
+);
+</pre>
+
+    <h3>License</h3>
+      <a href="https://github.com/davehorton/drachtio/blob/master/LICENSE">MIT</a>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/davehorton/drachtio">drachtio</a> is maintained by <a href="https://github.com/davehorton">davehorton</a>.</span>
+
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
