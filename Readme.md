@@ -2,22 +2,18 @@
 
 [![Join the chat at https://gitter.im/davehorton/drachtio](https://badges.gitter.im/davehorton/drachtio.svg)](https://gitter.im/davehorton/drachtio?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-<!-- [![Gittip](http://img.shields.io/gittip/davehorton.png)](https://www.gittip.com/davehorton/)
+[![drachtio logo](http://www.dracht.io/images/definition_only-cropped.png)](http://davehorton.github.io/drachtio/)
 
-<sub><sup>All tips will go to support the good causes and great people of
- beautiful, rural Pembrokeshire, Wales, where this code was born.  Iechyd da !!</sup></sub>
--->
+drachtio is a Node.js-based middleware framework for building [SIP](https://www.ietf.org/rfc/rfc3261.txt) applications.  It is inspired by classic http middleware frameworks such as [connect](https://github.com/senchalabs/connect) and [expressjs](http://expressjs.com/), and developers who are familiar with such frameworks will find it quite easy to understand and work with.  
 
-[![drachtio logo](http://www.dracht.io/images/definition_only-cropped.png)](http://dracht.io/)
+For developers new to SIP and VoIP in general, drachtio provides an easy path to building full-functional SIP applications; those more experienced with the SIP protocol will appreciate the flexibility that drachtio provides in terms of enabling any kind of SIP element: proxy servers, registars, user agent clients and servers, and back-to-back user agents.
 
-drachtio is [connect](https://github.com/senchalabs/connect)-inspired middleware for [SIP](https://www.ietf.org/rfc/rfc3261.txt) applications.
+drachtio works in concert with [drachtio-server](https://github.com/davehorton/drachtio-server) -- drachtio-server implements the SIP stack and handles low-level SIP message processing, while drachtio-based applications provide the higher level application logic and control the actions of a drachtio server over a TCP network connection.
 
-It is designed to make it easy for developers to incorporate SIP-based voice and data features into Node.js applications through the use of familiar middleware patterns. 
-
-drachtio enables developers to very easily build high-performance SIP proxy servers, registrars, user agents and other kinds of SIP applications on a Node.js stack.
+drachtio also enables the higher level frameworks [drachtio-srf](https://github.com/davehorton/drachtio-srf) - the drachtio sigaling resource framework, and [drachtio-fsmrf](https://github.com/davehorton/drachtio-fsmrf) - the drachtio media resource framework.  Generally speaking, developers should consider using drachtio for simpler SIP applications such as proxy servers and registrars, using drachtio-srf for more complex application patterns such as back-to-back user agents, and should incorporate drachtio-fsmrf when media processing features such as IVR, conferencing, or recording are required.
 
 ```js
-//simple SIP proxy
+//sample application: a SIP proxy
 var drachtio = require('drachtio');
 var app = drachtio() ;
 
@@ -46,15 +42,12 @@ app.invite( function( req, res ) {
 }) ;
 ```
 
-The drachtio middleware framework does not itself contain a SIP stack - the network processing of SIP messages is performed by [drachtio-server](https://github.com/davehorton/drachtio-server), an instance of which must be running on a network-accessible server. drachtio-server is a high-performance, programmable SIP user agent written in C++ that is built on top of the open-source [sofia](https://github.com/davehorton/sofia-sip) SIP stack
-
-drachtio also has a dependency on [drachtio-client](https://github.com/davehorton/drachtio-client), which is a Node.js library that manages a TCP connection to a drachtio server and provides SIP message parsing and other features.  Commands to control the drachtio server are sent over this socket, and messages received and other events are transmitted back to the client. 
-
 ## Getting started
 ### Creating an application
 The first thing an application must do is to require the drachtio library and invoke the returned function to create an application.  The application instance that is created is an EventEmitter.
 ```js
-var app = require('drachtio')() ;
+var drachtio = require('drachtio') ;
+var app = drachtio() ;
 ```
 ### Connecting to the server
 The next thing an application must do is to call the 'connect' method in order to connect to the drachtio-server that will be providing the SIP endpoint. By default, 
