@@ -1,7 +1,7 @@
 {
   "name": "drachtio",
-  "version": "0.4.1",
-  "description": "Simple connect-style middleware for drachtio sip applications",
+  "version": "1.0.1",
+  "description": "node.js middleware for sip applications",
   "keywords": [
     "framework",
     "sip",

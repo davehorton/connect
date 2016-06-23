@@ -6,13 +6,17 @@
 
 [![drachtio logo](http://www.dracht.io/images/definition_only-cropped.png)](http://davehorton.github.io/drachtio/)
 
-drachtio is a Node.js-based middleware framework for building [SIP](https://www.ietf.org/rfc/rfc3261.txt) applications.  It is inspired by classic http middleware frameworks such as [connect](https://github.com/senchalabs/connect) and [expressjs](http://expressjs.com/), and developers who are familiar with such frameworks will find it quite easy to understand and work with.  
+drachtio is a Node.js-based middleware framework for building [SIP](https://www.ietf.org/rfc/rfc3261.txt) applications.  It is inspired by classic http middleware frameworks such as [connect](https://github.com/senchalabs/connect) and [expressjs](http://expressjs.com/), and developers who are familiar with such frameworks will find it quite easy to use.  
 
-For developers new to SIP and VoIP in general, drachtio provides an easy path to building full-functional SIP applications; those more experienced with the SIP protocol will appreciate the flexibility that drachtio provides in terms of enabling any kind of SIP element: proxy servers, registars, user agent clients and servers, and back-to-back user agents.
+For those developers new to SIP and VoIP in general, drachtio provides an easy path to building full-functional SIP applications; while experienced SIP application developers will appreciate the flexibility that drachtio provides in terms of enabling any kind of SIP element: proxy servers, registars, user agent clients and servers, and back-to-back user agents.
 
 drachtio works in concert with [drachtio-server](https://github.com/davehorton/drachtio-server) -- drachtio-server implements the SIP stack and handles low-level SIP message processing, while drachtio-based applications provide the higher level application logic and control the actions of a drachtio server over a TCP network connection.
 
-drachtio also enables the higher level frameworks [drachtio-srf](https://github.com/davehorton/drachtio-srf) - the drachtio sigaling resource framework, and [drachtio-fsmrf](https://github.com/davehorton/drachtio-fsmrf) - the drachtio media resource framework.  Generally speaking, developers should consider using drachtio for simpler SIP applications such as proxy servers and registrars, using drachtio-srf for more complex application patterns such as back-to-back user agents, and should incorporate drachtio-fsmrf when media processing features such as IVR, conferencing, or recording are required.
+drachtio also enables the higher level frameworks 
++ [drachtio-srf](https://github.com/davehorton/drachtio-srf) - the drachtio sigaling resource framework, and 
++ [drachtio-fsmrf](https://github.com/davehorton/drachtio-fsmrf) - the drachtio media resource framework.  
+
+> Tip: Use drachtio for simple SIP applications (proxy servers, registrars, simple clients); use drachtio-srf for more complex applications that require SIP Dialog support. Incorporate drachtio-fsmrf with drachtio-srf when these more complex applications require media processing features (e.g. IVR, conferencing, recording, etc).
 
 ```js
 //sample application: a SIP proxy
@@ -69,10 +73,10 @@ A 'connect' event is emitted by the app object when the connection has been esta
 
 The callback or event handler will an error object (null in the case of a successful connection) and a string variable describing the sip address and port the drachtio server is listening on for SIP messages.
 
-### Receiving and responding to sip requests (UAS)
-A drachtio application can both send and receive SIP requests.  To receive SIP requests (i.e to act as a User Agent Server), app[verb] methods are used.  Request and Response objects are provided to the callback. 
+### Responding to sip requests
+A drachtio application can both send and receive SIP requests.  To receive SIP requests (i.e to act as a User Agent Server, or UAS), app[verb] methods are used.  Request and Response objects are provided to the callback. 
 
-The Request object contains information describing the incoming sip request, along with methods that can be used to act on the request (e.g., req#proxy is a method provided to proxy the request).  The Response object contains methods that allow the application to control the generation of the sip response, in the case of an application acting as a SIP user agent server (UAS). 
+The Request object contains information describing the incoming sip request, along with methods that can be used to act on the request (e.g., req#proxy is a method provided to proxy the request).  The Response object contains methods that allow the application to control the generation of the sip response. 
 
 ```js
 app.register( function( req, res ) {
@@ -117,9 +121,9 @@ app.invite( function( req, res ) {
     }) ;
 }) ;
 ```
-### Sending sip requests (UAC)
+### Sending sip requests
 
-SIP requests can be sent (i.e., to act as a User Agent Client) using the app.request method:
+SIP requests can be sent (i.e., to act as a User Agent Client, or UAC) using the app.request method:
 
 ```js
 // connect and then send an OPTIONS ping
