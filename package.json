@@ -1,6 +1,6 @@
 {
   "name": "drachtio",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "node.js middleware for sip applications",
   "keywords": [
     "framework",
@@ -43,7 +43,6 @@
     "grunt-jsdoc": "^1.0.0",
     "grunt-github-pages": "0.0.4",
     "minami": "^1.1.1"
-
   },
   "licenses": [
     {
