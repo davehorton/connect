@@ -246,5 +246,45 @@ describe('uac / uas', function() {
                 }) ;
             }) ;
         }) ;
+    }) ;
+    it('should be able to set a Contact header', function(done) {
+        var self = this ;
+        var app = drachtio() ;
+        configureUac( app, cfg.client[0] ) ;
+        uas = require('../scripts/invite-uas-set-contact/app')(cfg.client[1]) ;
+
+        app.bye( function(req,res){
+            res.send(200, function(err, bye){
+                should.not.exist(err) ;
+                app.idle.should.be.true; 
+                done() ;
+            }) ;
+        }) ;
+        cfg.connectAll([app, uas], function(err){
+            if( err ) throw err ;
+
+            app.request({
+                uri: cfg.sipServer[1],
+                method: 'INVITE',
+                body: cfg.client[0].sdp,
+                headers: {
+                    Subject: self.test.fullTitle()
+                }
+            }, function( err, req ) {
+                should.not.exist(err) ;
+                req.on('response', function(res, ack){
+                    //
+                    //validate response and send ack
+                    //
+                    res.should.have.property('status',200);
+                    var contact = res.get('Contact').split(',');
+
+                    // should only be one contact header
+                    contact.should.have.length(1);
+                    ack() ; 
+                }) ;
+            }) ;
+        }) ;
     }) ;    
+    
 }) ;
