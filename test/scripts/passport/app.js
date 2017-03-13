@@ -60,8 +60,17 @@ module.exports = function( config ) {
 
   app.use(passport.initialize());
   app.use('register', passport.authenticate('digest', { session: false })) ;
+  app.use('invite', passport.authenticate('digest', { session: false })) ;
 
   app.register( function(req, res) {
+    res.send(200, {
+      headers: {
+        expires: 3600
+      }
+    }) ;
+  }) ;
+
+  app.invite( function(req, res) {
     res.send(200, {
       headers: {
         expires: 3600
