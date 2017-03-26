@@ -9,16 +9,21 @@ module.exports = function( config ) {
 
   var inviteRes ;
 
-  app.invite(function(req,res){
+  app.invite(function(req,res) {
       var require = req.get('Require').toString() ;
       assert(-1 !== require.indexOf('100rel'), 'expecting 100rel to be required') ;
       inviteRes = res ;
 
+      debug('sending a 183 with 100rel');
       res.send(183, { 
         body: config.sdp,
         headers: {
           'Require': '100rel'
         }
+      }, function(err, msg) {
+        debug('res#send callback err: %s', JSON.stringify(arguments)) ;
+      }, function() {
+        debug('received PRACK');
       }) ;
   });
 

@@ -201,7 +201,7 @@ describe('uac / uas', function() {
             }) ;
         }) ;
     }) ;    
-    it('should be able to connect a call with a reliable provisional response', function(done) {
+    it.only('should be able to connect a call with a reliable provisional response', function(done) {
         var self = this ;
         var app = drachtio() ;
         configureUac( app, cfg.client[0] ) ;
