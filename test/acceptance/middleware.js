@@ -18,9 +18,29 @@ describe('middleware', function() {
         cfg.stopServers(done) ;
     }) ;
 
-    it('must set response time in a custom header', function(done) {
+    it('must enable locals', function(done) {
         uac = cfg.configureUac( cfg.client[0], Agent ) ;
         uas = require('../scripts/invite-non-success/app')(cfg.client[1]) ;
+        cfg.connectAll([uac, uas], function(err){
+            uac.request({
+                uri: cfg.sipServer[1],
+                method: 'INVITE',
+                body: cfg.client[0].sdp
+            }, function( err, req ) {
+                should.not.exist(err) ;
+                req.on('response', function(res){
+                    res.should.have.property('status',486); 
+                    uac.idle.should.be.true ;
+                    uas.idle.should.be.true ;
+                    done() ;                    
+                }) ;
+            }) ;
+        }) ;
+    }) ; 
+
+    it('must set response time in a custom header', function(done) {
+        uac = cfg.configureUac( cfg.client[0], Agent ) ;
+        uas = require('../scripts/invite-non-success/app2')(cfg.client[1]) ;
         cfg.connectAll([uac, uas], function(err){
             uac.request({
                 uri: cfg.sipServer[1],
