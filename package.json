@@ -1,6 +1,6 @@
 {
   "name": "drachtio",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "node.js middleware for sip applications",
   "keywords": [
     "framework",
