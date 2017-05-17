@@ -1,6 +1,6 @@
 {
   "name": "drachtio",
-  "version": "1.0.17",
+  "version": "3.0.1",
   "description": "node.js middleware for sip applications",
   "keywords": [
     "framework",
@@ -48,9 +48,9 @@
       "type": "MIT"
     }
   ],
-  "main": "./lib/connect",
+  "main": "./lib/connect.js",
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 6.5.0"
   },
   "repository": {
     "type": "git",

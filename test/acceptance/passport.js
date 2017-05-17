@@ -148,8 +148,6 @@ describe.only('passport integration', function() {
                 should.not.exist(err) ;
                 req.on('authenticate', function(req) {
                     seq2 = req.getParsedHeader('cseq').seq ;
-                    debug('cseq value on second request: ', seq2) ;
-                    debug('re-sent request with credentials: ', JSON.stringify(req)) ;
                 }) ;
                 req.on('response', function(res){
                     res.should.have.property('status',200); 
