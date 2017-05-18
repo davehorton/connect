@@ -10,7 +10,7 @@ var cfg = fixture(__dirname,[8060,8061,8062],[6060,6061,6062]) ;
 var proxy, uas ;
 
 function configureUac( app, config ) {
-    app.set('api logger',fs.createWriteStream(config.apiLog) ) ;
+    app.set('api logger', config.apiLog) ;
     app.connect(config.connect_opts) ;
     return app ;
 }
