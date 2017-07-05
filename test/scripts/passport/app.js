@@ -3,6 +3,11 @@ var fs = require('fs') ;
 var passport       = require('passport') ;
 var DigestStrategy = require('passport-http').DigestStrategy; 
 
+process.on('uncaughtException', (err) => {
+  console.log(`uncaughtException!!: ${JSON.stringify(err)}`);
+  console.error(err);
+})
+
 var users = [
     { id: 1, username: 'dhorton', password: '1234', domain: 'sip.drachtio.org'}
 ];
@@ -46,23 +51,25 @@ passport.use
 module.exports = function( config ) {
 
   var app = drachtio() ;
-  app.set('api logger',fs.createWriteStream(config.apiLog) ) ;
+  app.set('api logger', fs.createWriteStream(config.apiLog)) ;
 
-  app.on('connect', function(){
+/*
+  app.on('connect', () => {
+    console.log('uac connected ok, saving locals')
     app.client.locals = {
       delay: config.answerDelay || 1,
       reject_ceiling: config.allowCancel || 0,
-      dialogId: null, 
+      dialogId: null,
       count: 0,
       sdp: config.sdp
-    };     
+    };
   }) ;
-
+*/
   app.use(passport.initialize());
   app.use('register', passport.authenticate('digest', { session: false })) ;
   app.use('invite', passport.authenticate('digest', { session: false })) ;
 
-  app.register( function(req, res) {
+  app.register((req, res) => {
     res.send(200, {
       headers: {
         expires: 3600
@@ -70,7 +77,7 @@ module.exports = function( config ) {
     }) ;
   }) ;
 
-  app.invite( function(req, res) {
+  app.invite((req, res) => {
     res.send(200, {
       headers: {
         expires: 3600
@@ -82,7 +89,5 @@ module.exports = function( config ) {
 
   return app ;
 } ;
-
-
 
 
