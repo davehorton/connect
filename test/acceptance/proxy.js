@@ -64,7 +64,7 @@ describe('proxy', function() {
       }) ;
     }) ;
 
-    cfg.connectAll([app, proxy, uas], function(err) {
+    cfg.connectAll([app, proxy, uas], (err) => {
       if (err) throw err ;
 
       debug('sending INVITE');
@@ -192,7 +192,7 @@ describe('proxy', function() {
       }) ;
     }) ;
   }) ;
-  it.only('should handle handle reliable provisional responses', function(done) {
+  it('should handle handle reliable provisional responses', function(done) {
     const app = drachtio() ;
     configureUac(app, cfg.client[0]) ;
     proxy = require('../scripts/proxy/app')(merge({proxyTarget: cfg.sipServer[2],
@@ -239,4 +239,44 @@ describe('proxy', function() {
       }) ;
     }) ;
   }) ;
+  it('should return a Promise when no callback supplied', function(done) {
+    const app = drachtio() ;
+    configureUac(app, cfg.client[0]) ;
+    proxy = require('../scripts/proxy/app')(merge({
+      proxyTarget: cfg.sipServer[2],
+      remainInDialog: false,
+      testPromise: true,
+    }, cfg.client[1]));
+    uas = require('../scripts/invite-success-uas-bye/app')(cfg.client[2]) ;
+
+    app.bye((req, res) => {
+      res.send(200, (err, bye) => {
+        should.not.exist(err) ;
+        app.idle.should.be.true;
+        done() ;
+      }) ;
+    }) ;
+
+    cfg.connectAll([app, proxy, uas], (err) => {
+      if (err)  throw err ;
+
+      app.request({
+        uri: cfg.sipServer[1],
+        method: 'INVITE',
+        headers: {
+          'Subject' : this.test.fullTitle()
+        },
+        body: cfg.client[0].sdp
+      }, (err, req) => {
+        should.not.exist(err) ;
+        req.on('response', (res, ack) => {
+          res.should.have.property('status', 200);
+          should.not.exist(res.get('Record-Route')) ;
+          ack() ;
+        }) ;
+      }) ;
+    }) ;
+  }) ;
+
+
 }) ;
