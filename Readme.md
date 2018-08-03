@@ -6,9 +6,12 @@
 
 [![drachtio logo](http://www.dracht.io/images/definition_only-cropped.png)](http://davehorton.github.io/drachtio/)
 
-NOTE: **This package has been deprecated!  Please use [drachtio-srf](https://www.npmjs.com/package/drachtio-srf) instead.  Refer to docs at https://drachtio.org**
+NOTE: **This package has been deprecated!**
+**Please use [drachtio-srf](https://www.npmjs.com/package/drachtio-srf) instead.**  
+**Refer to docs at https://drachtio.org**
 
 _Documentation below is provided for legacy purposes only_
+
 drachtio is a Node.js-based middleware framework for building [SIP](https://www.ietf.org/rfc/rfc3261.txt) applications.  It is inspired by classic http middleware frameworks such as [connect](https://github.com/senchalabs/connect) and [expressjs](http://expressjs.com/), and developers who are familiar with such frameworks will find it quite easy to use.  
 
 For those developers new to SIP and VoIP in general, drachtio provides an easy path to building full-functional SIP applications; while experienced SIP application developers will appreciate the flexibility that drachtio provides in terms of enabling any kind of SIP element: proxy servers, registars, user agent clients and servers, and back-to-back user agents.
